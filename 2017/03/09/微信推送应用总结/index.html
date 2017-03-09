@@ -93,12 +93,12 @@
 <meta property="og:url" content="http://coderjack.ml/2017/03/09/微信推送应用总结/index.html">
 <meta property="og:site_name" content="CoderJack's Notes">
 <meta property="og:description" content="微信推送应用总结总结了之前 差评提醒 和 黑马词订阅 两个项目的相关操作流程和基本实现，给后面类似的项目提供参考。">
-<meta property="og:image" content="http://coderjack.ml/../images/用户微信绑定时序图.png">
-<meta property="og:updated_time" content="2017-03-09T03:01:04.000Z">
+<meta property="og:image" content="http://coderjack.ml/images/用户微信绑定时序图.png">
+<meta property="og:updated_time" content="2017-03-09T03:34:16.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="微信推送应用总结">
 <meta name="twitter:description" content="微信推送应用总结总结了之前 差评提醒 和 黑马词订阅 两个项目的相关操作流程和基本实现，给后面类似的项目提供参考。">
-<meta name="twitter:image" content="http://coderjack.ml/../images/用户微信绑定时序图.png">
+<meta name="twitter:image" content="http://coderjack.ml/images/用户微信绑定时序图.png">
 
 
 
@@ -335,7 +335,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-09T10:57:06+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-09T11:18:45+08:00">
                 2017-03-09
               </time>
             
@@ -408,7 +408,7 @@
 <a id="more"></a>
 <h3 id="一、-用户订阅"><a href="#一、-用户订阅" class="headerlink" title="一、 用户订阅"></a>一、 用户订阅</h3><p>用户订阅是通过微信扫描二维码实现的。用户扫描二维码之后，关注”名不虚传”的服务号，并将用户信息及订阅配置传递给后端服务。</p>
 <p>扫码时序图如下：</p>
-<p><img src="../images/用户微信绑定时序图.png" alt="用户微信绑定时序图"></p>
+<p><img src="/images/用户微信绑定时序图.png" alt="用户微信绑定时序图"></p>
 <p><strong>注：</strong>用户提交的配置数据实际上统一存放在了<code>Wechat-Service</code> 的数据库中，<code>微信提醒应用服务</code> 不存储用户配置数据；当 <code>应用服务</code> 需要用户配置数据的时候，需要通过 <code>Wechat-Service</code> 提供的<strong>接口</strong>获取。</p>
 <p>用户订阅信息可以封装成一个抽象数据类，具体的订阅配置由子类添加：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Data</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Subscription</span> </span>&#123;</div><div class="line">  <span class="keyword">protected</span> String nick;</div><div class="line">  <span class="keyword">protected</span> String subNick;</div><div class="line">  <span class="keyword">protected</span> String openid;</div><div class="line">  <span class="keyword">protected</span> String uuid;</div><div class="line">  <span class="keyword">protected</span> LocalDateTime createTime;</div><div class="line">  <span class="keyword">protected</span> LocalDateTime updateTime;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
