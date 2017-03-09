@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="wechat," />
 
 
 
@@ -87,15 +87,18 @@
 
 
 
-<meta name="description" content="有故事，有思考，有想法">
-<meta property="og:type" content="website">
-<meta property="og:title" content="CoderJack's Notes">
-<meta property="og:url" content="http://coderjack.ml/index.html">
+<meta name="description" content="微信推送应用总结总结了之前 差评提醒 和 黑马词订阅 两个项目的相关操作流程和基本实现，给后面类似的项目提供参考。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微信推送应用总结">
+<meta property="og:url" content="http://coderjack.ml/2017/03/09/微信推送应用总结/index.html">
 <meta property="og:site_name" content="CoderJack's Notes">
-<meta property="og:description" content="有故事，有思考，有想法">
+<meta property="og:description" content="微信推送应用总结总结了之前 差评提醒 和 黑马词订阅 两个项目的相关操作流程和基本实现，给后面类似的项目提供参考。">
+<meta property="og:image" content="http://coderjack.ml/../images/用户微信绑定时序图.png">
+<meta property="og:updated_time" content="2017-03-09T03:01:04.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="CoderJack's Notes">
-<meta name="twitter:description" content="有故事，有思考，有想法">
+<meta name="twitter:title" content="微信推送应用总结">
+<meta name="twitter:description" content="微信推送应用总结总结了之前 差评提醒 和 黑马词订阅 两个项目的相关操作流程和基本实现，给后面类似的项目提供参考。">
+<meta name="twitter:image" content="http://coderjack.ml/../images/用户微信绑定时序图.png">
 
 
 
@@ -123,13 +126,13 @@
 
 
 
-  <link rel="canonical" href="http://coderjack.ml/"/>
+  <link rel="canonical" href="http://coderjack.ml/2017/03/09/微信推送应用总结/"/>
 
 
 
 
 
-  <title> CoderJack's Notes </title>
+  <title> 微信推送应用总结 | CoderJack's Notes </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -154,9 +157,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-right 
-   page-home 
- ">
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -287,9 +288,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -319,10 +320,7 @@
             
             
               
-                
-                <a class="post-title-link" href="/2017/03/09/微信推送应用总结/" itemprop="url">
-                  微信推送应用总结
-                </a>
+                微信推送应用总结
               
             
           </h1>
@@ -406,202 +404,105 @@
       
 
       
-        
-          <h2 id="微信推送应用总结"><a href="#微信推送应用总结" class="headerlink" title="微信推送应用总结"></a>微信推送应用总结</h2><p>总结了之前 <code>差评提醒</code> 和 <code>黑马词订阅</code> 两个项目的相关操作流程和基本实现，给后面类似的项目提供参考。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/03/09/微信推送应用总结/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
+        <h2 id="微信推送应用总结"><a href="#微信推送应用总结" class="headerlink" title="微信推送应用总结"></a>微信推送应用总结</h2><p>总结了之前 <code>差评提醒</code> 和 <code>黑马词订阅</code> 两个项目的相关操作流程和基本实现，给后面类似的项目提供参考。</p>
+<a id="more"></a>
+<h3 id="一、-用户订阅"><a href="#一、-用户订阅" class="headerlink" title="一、 用户订阅"></a>一、 用户订阅</h3><p>用户订阅是通过微信扫描二维码实现的。用户扫描二维码之后，关注”名不虚传”的服务号，并将用户信息及订阅配置传递给后端服务。</p>
+<p>扫码时序图如下：</p>
+<p><img src="../images/用户微信绑定时序图.png" alt="用户微信绑定时序图"></p>
+<p><strong>注：</strong>用户提交的配置数据实际上统一存放在了<code>Wechat-Service</code> 的数据库中，<code>微信提醒应用服务</code> 不存储用户配置数据；当 <code>应用服务</code> 需要用户配置数据的时候，需要通过 <code>Wechat-Service</code> 提供的<strong>接口</strong>获取。</p>
+<p>用户订阅信息可以封装成一个抽象数据类，具体的订阅配置由子类添加：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Data</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Subscription</span> </span>&#123;</div><div class="line">  <span class="keyword">protected</span> String nick;</div><div class="line">  <span class="keyword">protected</span> String subNick;</div><div class="line">  <span class="keyword">protected</span> String openid;</div><div class="line">  <span class="keyword">protected</span> String uuid;</div><div class="line">  <span class="keyword">protected</span> LocalDateTime createTime;</div><div class="line">  <span class="keyword">protected</span> LocalDateTime updateTime;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>Subscription</code> 子类示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DarkHorseWordsSubscription</span> <span class="keyword">extends</span> <span class="title">Subscription</span> </span>&#123;</div><div class="line">  <span class="keyword">private</span> List&lt;Long&gt; cids;</div><div class="line">  <span class="keyword">private</span> List&lt;String&gt; names;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>注：</strong>前端请求的 <code>Json</code> 数据格式需要匹配具体的 <code>Subscription</code> 子类；后面的修改也基于这个子类。</p>
+<p><code>应用服务</code> 发送订阅信息到 <code>Wechat-Service</code> 的数据类示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Data</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WechatBindRequest</span> </span>&#123;</div><div class="line">  <span class="keyword">private</span> String serviceName;</div><div class="line">  <span class="keyword">private</span> String nick;</div><div class="line">  <span class="keyword">private</span> String subNick;</div><div class="line">  <span class="keyword">private</span> String uuid;</div><div class="line">  <span class="keyword">private</span> Subscription extra;</div><div class="line">  <span class="keyword">private</span> TemplateMsg welcome; <span class="comment">// 绑定成功服务号推送的消息</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h4><p><code>Wechat-Service</code> 绑定操作接口文档：</p>
+<ul>
+<li><a href="https://git.chachazhan.com/mbxc/wechat-service/wikis/%E7%94%A8%E6%88%B7%E7%BB%91%E5%AE%9A#%E5%85%B7%E4%BD%93%E6%B5%81%E7%A8%8B" target="_blank" rel="external">用户绑定</a></li>
+<li><a href="https://git.chachazhan.com/mbxc/wechat-service/wikis/%E7%94%A8%E6%88%B7%E7%BB%91%E5%AE%9A#%E6%9B%B4%E6%96%B0%E7%BB%91%E5%AE%9A%E9%85%8D%E7%BD%AE" target="_blank" rel="external">更新配置信息</a></li>
+<li><a href="https://git.chachazhan.com/mbxc/wechat-service/wikis/%E7%94%A8%E6%88%B7%E7%BB%91%E5%AE%9A#%E5%8F%96%E6%B6%88%E7%BB%91%E5%AE%9A" target="_blank" rel="external">取消绑定</a></li>
+</ul>
+<p><code>Wechat-Service</code> 绑定信息查询接口文档：</p>
+<ul>
+<li><a href="https://git.chachazhan.com/mbxc/wechat-service/wikis/%E7%94%A8%E6%88%B7%E7%BB%91%E5%AE%9A#%E6%9F%A5%E8%AF%A2%E7%BB%91%E5%AE%9A%E4%BA%BA%E6%95%B0" target="_blank" rel="external">查询绑定人数</a></li>
+<li><a href="https://git.chachazhan.com/mbxc/wechat-service/wikis/%E7%94%A8%E6%88%B7%E7%BB%91%E5%AE%9A#%E6%9F%A5%E8%AF%A2%E7%BB%91%E5%AE%9A%E5%88%97%E8%A1%A8" target="_blank" rel="external">查询绑定列表</a></li>
+</ul>
+<h3 id="二、ONS消息处理"><a href="#二、ONS消息处理" class="headerlink" title="二、ONS消息处理"></a>二、ONS消息处理</h3><p>阿里云提供了ONS消息处理的SDK，使用比较方便。</p>
+<p>开启ONS消息订阅示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">createConsumer</span><span class="params">()</span> </span>&#123;</div><div class="line">  Properties properties = <span class="keyword">new</span> Properties();</div><div class="line">  properties.put(PropertyKeyConst.ConsumerId, getConsumerId());</div><div class="line">  properties.put(PropertyKeyConst.AccessKey, getAccessKey());</div><div class="line">  properties.put(PropertyKeyConst.SecretKey, getSecretKey());</div><div class="line">  <span class="keyword">return</span> ONSFactory.createConsumer(properties);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">subscribe</span><span class="params">()</span> </span>&#123;</div><div class="line">  Consumer consumer = createConsumer();</div><div class="line">  consumer.subscribe(getTopic, getTag(), (message, context) -&gt; &#123;</div><div class="line">    handle(message); <span class="comment">// 具体处理消息的方法</span></div><div class="line">  &#125;);</div><div class="line">  consumer.start(); <span class="comment">// 此处启动消费者线程</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="三、发送微信提醒消息"><a href="#三、发送微信提醒消息" class="headerlink" title="三、发送微信提醒消息"></a>三、发送微信提醒消息</h3><p>提醒消息在微信中为 <code>模板消息</code> ，需要绑定微信公众号后台提供的消息模板。</p>
+<p><code>模板消息</code> 类示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Data</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TemplateMessage</span> </span>&#123;</div><div class="line">  <span class="keyword">private</span> String toUser; <span class="comment">// 接受消息的用户，openid</span></div><div class="line">  <span class="keyword">private</span> String templateId; <span class="comment">// 绑定的模板ID</span></div><div class="line">  <span class="keyword">private</span> String url; <span class="comment">// 消息点击后跳转的地址</span></div><div class="line">  <span class="keyword">private</span> String topColor; <span class="comment">// 全局字体颜色</span></div><div class="line">  <span class="keyword">private</span> Map&lt;String, TemplateParam&gt; data; <span class="comment">// 模板对应字段的数据</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Data</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TemplateParam</span> </span>&#123;</div><div class="line">  <span class="keyword">private</span> String value; <span class="comment">// 字段值</span></div><div class="line">  <span class="keyword">private</span> String color; <span class="comment">// 指定字体颜色</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>注：</strong>模板消息发送是直接调用微信后台接口，<code>Wechat-Service</code> 只做转发，<a href="https://git.chachazhan.com/mbxc/wechat-service/wikis/home#%E5%BE%AE%E4%BF%A1-api-wechat-api" target="_blank" rel="external">参考文档</a>。</p>
+<h3 id="四、对外接口"><a href="#四、对外接口" class="headerlink" title="四、对外接口"></a>四、对外接口</h3><ol>
+<li>新增配置信息接口[POST]。此接口包含了二维码 <code>ticket</code> 和绑定状态，也是二维码获取和绑定状态查询接口。</li>
+<li>更改配置信息接口[PUT]。</li>
+<li>获取用户及配置列表接口[GET]。</li>
+<li>删除配置信息接口[DELETE]。</li>
+<li>微信消息详情页数据接口[GET]。根据具体业务提供数据。</li>
+</ol>
+
       
     </div>
 
     <div>
       
+        
+
+      
     </div>
 
     <div>
+      
+        
+
       
     </div>
 
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://coderjack.ml/2017/03/06/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="CoderJack">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="CoderJack's Notes">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/06/hello-world/" itemprop="url">
-                  Hello World
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-06T14:07:07+08:00">
-                2017-03-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Thoughts/" itemprop="url" rel="index">
-                    <span itemprop="name">Thoughts</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
+            <a href="/tags/wechat/" rel="tag"># wechat</a>
           
-
-          
-            
-          
-
-          
-          
-             <span id="/2017/03/06/hello-world/" class="leancloud_visitors" data-flag-title="Hello World">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
         
-          <p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/03/06/hello-world/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/06/hello-world/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
+              </a>
+            
           </div>
-          <!--/noindex-->
-        
-      
-    </div>
 
-    <div>
-      
-    </div>
+          <span class="post-nav-divider"></span>
 
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
       
 
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
           
           </div>
@@ -609,6 +510,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -628,8 +533,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.jpg"
@@ -728,6 +642,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#微信推送应用总结"><span class="nav-number">1.</span> <span class="nav-text">微信推送应用总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、-用户订阅"><span class="nav-number">1.1.</span> <span class="nav-text">一、 用户订阅</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参考文档"><span class="nav-number">1.1.1.</span> <span class="nav-text">参考文档</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、ONS消息处理"><span class="nav-number">1.2.</span> <span class="nav-text">二、ONS消息处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、发送微信提醒消息"><span class="nav-number">1.3.</span> <span class="nav-text">三、发送微信提醒消息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、对外接口"><span class="nav-number">1.4.</span> <span class="nav-text">四、对外接口</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -833,6 +763,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
 
   
 
